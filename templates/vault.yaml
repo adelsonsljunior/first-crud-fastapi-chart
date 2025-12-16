@@ -1,0 +1,40 @@
+{{- if .Values.vault.enabled }}
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultConnection
+metadata:
+  name: {{ .Values.vault.connection.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  address: {{ .Values.vault.connection.address }}
+{{- end }}
+---
+{{- if .Values.vault.enabled }}
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: {{ .Values.vault.auth.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  vaultConnectionRef: {{ .Values.vault.connection.name }}
+  method: {{ .Values.vault.auth.method }}
+  mount: {{ .Values.vault.auth.mount }}
+  kubernetes:
+    role: {{ .Values.vault.auth.kubernetes.role }}
+    serviceAccount: {{ include "first-crud-fastapi-chart.serviceAccountName" . }}
+{{- end }}
+---
+{{- if .Values.vault.enabled }}
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: {{ .Values.vault.secret.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  vaultAuthRef: {{ .Values.vault.auth.name }}
+  type: {{ .Values.vault.secret.type }}
+  destination:
+    name: {{ .Values.vault.secret.destination.name }}
+    create: true
+  mount: {{ .Values.vault.secret.mount }}
+  path: {{ .Values.vault.secret.path }}
+{{- end }}
