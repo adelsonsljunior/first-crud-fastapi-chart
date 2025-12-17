@@ -2,7 +2,7 @@ replicaCount: 1
 image:
   repository: junioradelsonst/first-crud-fastapi
   pullPolicy: IfNotPresent
-  tag: "ebe7ab6"
+  tag: "aaf1bca"
 
 imagePullSecrets: []
 
