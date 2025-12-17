@@ -69,9 +69,9 @@ httpRoute:
   annotations: {}
   # Which Gateways this Route is attached to.
   parentRefs:
-  - name: gateway
-    sectionName: http
-    # namespace: default
+  - name: traefik-gateway
+    # sectionName: api
+    namespace: traefik
     # Hostnames matching HTTP header.
   hostnames:
   - first-crud-fastapi.lab.local
@@ -80,7 +80,7 @@ httpRoute:
   - matches:
     - path:
         type: PathPrefix
-        value: /headers
+        value: /
   #   filters:
   #   - type: RequestHeaderModifier
   #     requestHeaderModifier:
