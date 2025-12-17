@@ -32,6 +32,35 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: check-postresql-ready
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          command:
+          - sh
+          - -c
+          args:
+          - >
+            until pg_isready -h $DB_HOST -p $DB_PORT -d $DB_NAME; do
+              echo "Postgres inda não está pronto...";
+              sleep 2;
+            done;
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "first-crud-fastapi.fullname" . }}
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "first-crud-fastapi.fullname" . }}
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "first-crud-fastapi.fullname" . }}
+                  key: DB_NAME
       containers:
         - name: {{ .Chart.Name }}-container
           {{- with .Values.securityContext }}
