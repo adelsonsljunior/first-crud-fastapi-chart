@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "first-crud-fastapi-chart.fullname" . }}
+  name: {{ include "first-crud-fastapi.fullname" . }}
   labels:
-    {{- include "first-crud-fastapi-chart.labels" . | nindent 4 }}
+    {{- include "first-crud-fastapi.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "first-crud-fastapi-chart.selectorLabels" . | nindent 6 }}
+      {{- include "first-crud-fastapi.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "first-crud-fastapi-chart.labels" . | nindent 8 }}
+        {{- include "first-crud-fastapi.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -27,7 +27,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "first-crud-fastapi-chart.serviceAccountName" . }}
+      serviceAccountName: {{ include "first-crud-fastapi.serviceAccountName" . }}
       {{- with .Values.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
