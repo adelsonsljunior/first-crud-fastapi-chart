@@ -19,23 +19,26 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: "app-first-crud-fastapi"
+  name: ""
 # This is for setting Kubernetes Annotations to a Pod.
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
 # This is for setting Kubernetes Labels to a Pod.
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
-podSecurityContext: {}
-# fsGroup: 2000
+podSecurityContext:
+  fsGroup: 2000
+  seccompProfile:
+    type: RuntimeDefault
 
-securityContext: {}
-# capabilities:
-#   drop:
-#   - ALL
-# readOnlyRootFilesystem: true
-# runAsNonRoot: true
-# runAsUser: 1000
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+  allowPrivilegeEscalation: false
 
 service:
   type: ClusterIP
@@ -104,11 +107,11 @@ resources:
 livenessProbe:
   httpGet:
     path: /api/health
-    port: http
+    port: api
 readinessProbe:
   httpGet:
     path: /api/health
-    port: http
+    port: api
 
 autoscaling:
   enabled: true
@@ -133,25 +136,10 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
-vault:
+secret:
   enabled: true
-  connection:
-    name: vault-connection-app-first-crud-fastapi
-    address: "http://vault.vault.svc.cluster.local:8200"
-  auth:
-    name: vault-auth-app-first-crud-fastapi
-    method: kubernetes
-    mount: kubernetes
-    kubernetes:
-      role: avaliacao-backend-prod-role
-  secret:
-    name: vault-secret-app-first-crud-fastapi
-    type: kv-v2
-    # O nome do Secret que será criado no Kubernetes
-    destination:
-      name: secret-app-first-crud-fastapi
-    mount: first-crud-fastapi
-    path: prod/backend
+  name: secret-app-acompanha
+  encryptedData:
 
 postgresql:
   auth:
