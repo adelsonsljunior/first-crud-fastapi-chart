@@ -42,7 +42,7 @@ spec:
           args:
           - >
             until pg_isready -h $DB_HOST -p $DB_PORT -d $DB_NAME; do
-              echo "Postgres inda não está pronto...";
+              echo "Postgres ainda não está pronto...";
               sleep 2;
             done;
           env:
@@ -73,9 +73,9 @@ spec:
             - name: api
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          {{- if .Values.sealedSecret.enabled }}
+          {{- if .Values.secret.enabled }}
           env:
-            {{- range  $key, $val := .Values.sealedSecret.encryptedData }}
+            {{- range  $key, $val := .Values.secret.stringData }}
             - name:  {{ $key }}
               valueFrom:
                 secretKeyRef:
