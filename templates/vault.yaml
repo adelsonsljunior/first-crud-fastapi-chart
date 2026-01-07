@@ -2,6 +2,8 @@ apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: {{ include "first-crud-fastapi.fullname" . }}
+  labels:
+   {{- include "first-crud-fastapi.labels" . | nindent 4 }}
 spec:
   provider:
     vault:
@@ -19,6 +21,8 @@ apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: {{ include "first-crud-fastapi.fullname" . }}
+  labels:
+   {{- include "first-crud-fastapi.labels" . | nindent 4 }}
 spec:
   refreshInterval: {{ .Values.vault.refreshInterval }}
   secretStoreRef:
@@ -37,6 +41,8 @@ apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: {{ include "first-crud-fastapi.databaseName" . }}
+  labels:
+   {{- include "first-crud-fastapi.labels" . | nindent 4 }}
 spec:
   refreshInterval: {{ .Values.postgresql.vault.refreshInterval }}
   secretStoreRef:
