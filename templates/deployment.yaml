@@ -41,8 +41,7 @@ spec:
           - -c
           args:
           - >
-            until pg_isready -h $DB_HOST -p $DB_PORT -d $DB_NAME; do
-              echo "Postgres ainda não está pronto...";
+            until pg_isready -h $DB_HOST -p $DB_PORT; do
               sleep 2;
             done;
           env:
@@ -56,11 +55,6 @@ spec:
                 secretKeyRef:
                   name: {{ include "first-crud-fastapi.fullname" . }}
                   key: DB_PORT
-            - name: DB_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "first-crud-fastapi.fullname" . }}
-                  key: DB_NAME
       containers:
         - name: {{ .Chart.Name }}-container
           {{- with .Values.securityContext }}
