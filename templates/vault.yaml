@@ -1,0 +1,52 @@
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: {{ include "first-crud-fastapi.fullname" . }}
+spec:
+  provider:
+    vault:
+      server: {{ .Values.vault.server }}
+      path: {{ .Values.vault.path }}
+      version: {{ .Values.vault.version }}
+      auth:
+        kubernetes:
+          mountPath: {{ .Values.vault.auth.kubernetes.mountPath }}
+          role: {{ include "first-crud-fastapi.fullname" . }}
+          serviceAccountRef:
+            name: {{ include "first-crud-fastapi.serviceAccountName" . }}
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: {{ include "first-crud-fastapi.fullname" . }}
+spec:
+  refreshInterval: {{ .Values.vault.refreshInterval }}
+  secretStoreRef:
+    name: {{ include "first-crud-fastapi.fullname" . }}
+    kind: SecretStore
+  target:
+    name: {{ include "first-crud-fastapi.fullname" . }}
+    creationPolicy: Owner
+  {{- with .Values.vault.dataFrom }}
+  dataFrom:
+    {{- toYaml . | nindent 4}}
+  {{- end }}
+---
+{{- if .Values.postgresql.enabled }}
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: {{ include "first-crud-fastapi.databaseName" . }}
+spec:
+  refreshInterval: {{ .Values.postgresql.vault.refreshInterval }}
+  secretStoreRef:
+    name: {{ include "first-crud-fastapi.fullname" . }}
+    kind: SecretStore
+  target:
+    name: {{ include "first-crud-fastapi.databaseName" . }}
+    creationPolicy: Owner
+  {{- with .Values.postgresql.vault.dataFrom }}
+  dataFrom:
+    {{- toYaml . | nindent 4}}
+  {{- end }}
+{{- end }}

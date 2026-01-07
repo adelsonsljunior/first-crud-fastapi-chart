@@ -136,15 +136,18 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
-secret:
-  enabled: true
-  stringData:
-    DB_HOST: "first-crud-fastapi-database-rw"
-    DB_NAME: "first_crud"
-    DB_PASSWORD: "123456"
-    DB_PORT: "5432"
-    DB_USER: "app_user"
- 
+vault:
+  server: "http://vault.vault.svc.cluster.local:8200"
+  path: first-crud-fastapi
+  version: v2
+  auth:
+    kubernetes:
+      mountPath: kubernetes
+  refreshInterval: 1h0m0s
+  dataFrom:
+    - extract:
+        key: backend
+
 postgresql:
   enabled: true
   instances: 1
@@ -159,8 +162,14 @@ postgresql:
   storage:
     size: 1Gi
 
-  secret:
-    stringData: 
-      password: "123456"
-      username: "app_user"
-
+  vault:
+    server: "http://vault.vault.svc.cluster.local:8200"
+    path: first-crud-fastapi
+    version: v2
+    auth:
+      kubernetes:
+        mountPath: kubernetes
+    refreshInterval: 1h0m0s
+    dataFrom:
+      - extract:
+          key: database

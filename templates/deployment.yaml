@@ -73,16 +73,9 @@ spec:
             - name: api
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          {{- if .Values.secret.enabled }}
-          env:
-            {{- range  $key, $val := .Values.secret.stringData }}
-            - name:  {{ $key }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "first-crud-fastapi.fullname" $ }}
-                  key: {{ $key }}
-            {{- end }}
-          {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ include "first-crud-fastapi.fullname" . }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
