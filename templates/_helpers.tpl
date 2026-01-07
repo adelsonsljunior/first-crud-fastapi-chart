@@ -60,3 +60,10 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Cria o nome do banco de dados baseado no fullname.
+*/}}
+{{- define "first-crud-fastapi.databaseName" -}}
+{{- printf "%s-database" (include "first-crud-fastapi.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}

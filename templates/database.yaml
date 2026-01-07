@@ -2,7 +2,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: {{ include "first-crud-fastapi.fullname" . }}-database
+  name: {{ include "first-crud-fastapi.databaseName" . }}
   labels:
    {{- include "first-crud-fastapi.labels" . | nindent 4 }}
 spec:
